@@ -8,22 +8,39 @@ var nameInputEl = document.querySelector("#username");
 var repoContainerEl = document.querySelector("#repos-container");
 var repoSearchTerm = document.querySelector("#repo-search-term");
 
+var formSubmitHandler = function(event) {
+  event.preventDefault();
+  var username = nameInputEl.value.trim();
+
+  if (username) {
+    getUserRepos(username);
+    repoContainerEl.textContent = '';
+    nameInputEl.value = '';
+  } else {
+    alert("Please enter a GitHub username");
+  }
+};
+
 var getUserRepos = function(user) {                                      // format the github api url
+
   var apiUrl = "https://api.github.com/users/" + user + "/repos";
   fetch(apiUrl)
-  .then(function(response) {
-    if (response.ok) {
-      response.json().then(function(data) {
+    .then(function(response) {
+
+      if (response.ok) {
+        console.log(response);
+        response.json().then(function(data) {
+        console.log(data);
         displayRepos(data, user);
       });
-    } else {
-      alert('Error: GitHub User Not Found');
-    }
-  })
-  .catch(function(error) {
-    // Notice this `.catch()` getting chained onto the end of the `.then()` method
-    alert("Unable to connect to GitHub");
-  });
+
+      } else {
+        alert('Error: ' + response.statusText);
+      }
+    })
+    .catch(function(error) {
+      alert("Unable to connect to GitHub");
+    });
 };
 
 var displayRepos = function(repos, searchTerm) {
@@ -31,9 +48,7 @@ var displayRepos = function(repos, searchTerm) {
     repoContainerEl.textContent = "No repositories found.";
     return;
   }
-  console.log(repos);
-  console.log(searchTerm);
-  repoContainerEl.textContent = "";
+
   repoSearchTerm.textContent = searchTerm;
 
   for (var i = 0; i < repos.length; i++) {        
@@ -56,33 +71,20 @@ var displayRepos = function(repos, searchTerm) {
 
 
     if (repos[i].open_issues_count > 0) {                      // check if current repo has issues or not
-    statusEl.innerHTML =
-    "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
-    } else {
+      statusEl.innerHTML =
+      "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
+    } 
+    else {
     statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-    }
+    } 
 
-    
-    repoEl.appendChild(statusEl);                        // append to container
-   
+    repoEl.appendChild(statusEl);                        // append to container 
     repoContainerEl.appendChild(repoEl);                 // append container to the dom
-    }
-    };
+  }
+};
 
 
 /*                    EVENT LISTENERS FOR FORM                 */
-
-var formSubmitHandler = function(event) {
-  event.preventDefault();
-  var username = nameInputEl.value.trim();
-
-  if (username) {
-    getUserRepos(username);
-    nameInputEl.value = "";
-  } else {
-    alert("Please enter a GitHub username");
-  }
-};
 
 userFormEl.addEventListener("submit", formSubmitHandler);
 
