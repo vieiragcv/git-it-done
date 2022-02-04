@@ -28,18 +28,17 @@ var getUserRepos = function(user) {                                      // form
     .then(function(response) {
 
       if (response.ok) {
-        console.log(response);
         response.json().then(function(data) {
-        console.log(data);
         displayRepos(data, user);
       });
-
-      } else {
-        alert('Error: ' + response.statusText);
+      } 
+      else {
+        alert('Error: GitHub User Not Found');
       }
     })
     .catch(function(error) {
       alert("Unable to connect to GitHub");
+      console.log(error);
     });
 };
 
