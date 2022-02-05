@@ -53,21 +53,17 @@ var displayRepos = function(repos, searchTerm) {
   for (var i = 0; i < repos.length; i++) {        
 
     var repoName = repos[i].owner.login + "/" + repos[i].name;   // format repo name
+ 
   
-    
-    var repoEl = document.createElement("div");                // create a container for each repo
+    var repoEl = document.createElement("a");                // create a container for each repo
     repoEl.classList = "list-item flex-row justify-space-between align-center";
-  
-    
+    repoEl.setAttribute("href", "./single-repo.html?repo=" + repoName);
     var titleEl = document.createElement("span");               // create a span element to hold repository name
     titleEl.textContent = repoName;
-  
-    
     repoEl.appendChild(titleEl);                            // append to container
   
     var statusEl = document.createElement("span");
     statusEl.classList = "flex-row align-center";
-
 
     if (repos[i].open_issues_count > 0) {                      // check if current repo has issues or not
       statusEl.innerHTML =
